@@ -7,8 +7,8 @@ import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 import org.junit.Test;
 import ru.alcereo.TypeSafeBolt;
-import ru.alcereo.tests.bolttypes.PersonToTextBolt;
-import ru.alcereo.tests.bolttypes.TextToPersonBolt;
+import ru.alcereo.tests.bolttypes.PersonToTextFunctionalBolt;
+import ru.alcereo.tests.bolttypes.TextToPersonFunctionalBolt;
 import ru.alcereo.tests.valuetypes.PersonValue;
 import ru.alcereo.tests.valuetypes.TextValue;
 
@@ -27,7 +27,7 @@ public class TopologyTest {
         LocalCluster cluster = new LocalCluster();
 
         TypeSafeBolt<TextValue, PersonValue> textToTextBolt1 =
-                new TextToPersonBolt((textValue, emitter) -> {
+                new TextToPersonFunctionalBolt((textValue, emitter) -> {
 
                     PersonValue result = new PersonValue();
 
@@ -56,14 +56,14 @@ public class TopologyTest {
 
 
         TypeSafeBolt<PersonValue, TextValue> bolt2 =
-                new PersonToTextBolt((value1, consumer) -> {
+                new PersonToTextFunctionalBolt((value1, consumer) -> {
 
                     System.out.println("name: "+value1.getName());
 
                 });
 
         TypeSafeBolt<PersonValue, TextValue> bolt3 =
-                new PersonToTextBolt((value1, consumer) -> {
+                new PersonToTextFunctionalBolt((value1, consumer) -> {
 
                     System.out.println("age: "+value1.getAge());
 

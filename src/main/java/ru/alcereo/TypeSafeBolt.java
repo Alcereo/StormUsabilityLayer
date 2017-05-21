@@ -8,6 +8,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import ru.alcereo.utils.Consumer2WithFunction;
+import ru.alcereo.utils.SerializableConsumer;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -18,15 +19,16 @@ import java.util.function.Function;
  */
 public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends TupledPojo> extends BaseRichBolt{
 
-    public TypeSafeBolt(Class<TYPE_IN> classIn, Class<TYPE_OUT> classOut) {
-        this.classIn = classIn;
-        this.classOut = classOut;
-    }
-
     private Class<TYPE_IN> classIn;
     private Class<TYPE_OUT> classOut;
 
     private OutputCollector collector;
+
+
+    public TypeSafeBolt(Class<TYPE_IN> classIn, Class<TYPE_OUT> classOut) {
+        this.classIn = classIn;
+        this.classOut = classOut;
+    }
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -37,7 +39,7 @@ public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends 
     public void execute(Tuple input) {
         try {
             TYPE_IN objectIn = TypeSafeMapper.mapToPojo(input, classIn);
-            getMapFunction().consume(objectIn, this::emitFunction);
+            consume(objectIn, this::emitFunction);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -58,7 +60,6 @@ public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends 
         );
     }
 
-
-    public abstract Consumer2WithFunction<TYPE_IN, TYPE_OUT> getMapFunction();
+    public abstract void consume(TYPE_IN value1, SerializableConsumer<TYPE_OUT> consumer);
 
 }
