@@ -2,6 +2,7 @@ package ru.alcereo.tests.bolttypes;
 
 import ru.alcereo.TypeSafeBolt;
 import ru.alcereo.tests.valuetypes.TextValue;
+import ru.alcereo.utils.Consumer2WithFunction;
 import ru.alcereo.utils.SerializableFunction;
 
 import java.util.function.Function;
@@ -11,15 +12,15 @@ import java.util.function.Function;
  */
 public class TextToTextBolt extends TypeSafeBolt<TextValue, TextValue> {
 
-    private SerializableFunction<TextValue, TextValue> mapFunction;
+    private Consumer2WithFunction<TextValue, TextValue> mapFunction;
 
-    public TextToTextBolt(SerializableFunction<TextValue, TextValue> fullTextSpoutValueFullTextSpoutValueFunction) {
+    public TextToTextBolt(Consumer2WithFunction<TextValue, TextValue> fullTextSpoutValueFullTextSpoutValueFunction) {
         super(TextValue.class, TextValue.class);
         this.mapFunction = fullTextSpoutValueFullTextSpoutValueFunction;
     }
 
     @Override
-    public Function<TextValue, TextValue> getMapFunction() {
+    public Consumer2WithFunction<TextValue, TextValue> getMapFunction() {
         return mapFunction;
     }
 }

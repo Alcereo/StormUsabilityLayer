@@ -7,6 +7,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import ru.alcereo.utils.Consumer2WithFunction;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -36,13 +37,7 @@ public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends 
     public void execute(Tuple input) {
         try {
             TYPE_IN objectIn = TypeSafeMapper.mapToPojo(input, classIn);
-
-            TYPE_OUT objectOut = getMapFunction().apply(objectIn);
-
-            Values values = TypeSafeMapper.mapToValues(objectOut);
-
-            collector.emit(values);
-
+            getMapFunction().consume(objectIn, this::emitFunction);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -64,6 +59,6 @@ public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends 
     }
 
 
-    public abstract Function<TYPE_IN, TYPE_OUT> getMapFunction();
+    public abstract Consumer2WithFunction<TYPE_IN, TYPE_OUT> getMapFunction();
 
 }
