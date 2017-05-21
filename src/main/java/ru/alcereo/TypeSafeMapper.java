@@ -11,19 +11,19 @@ import java.util.stream.Collectors;
 /**
  * Created by alcereo on 21.05.17.
  */
-public class TypeSafeMapper {
+class TypeSafeMapper {
 
-    public static <TYPE extends TupledPojo> TYPE mapToPojo(Tuple input, Class<TYPE> classIn) throws IllegalAccessException, InstantiationException {
+    static <TYPE extends TupledPojo> TYPE mapToPojo(Tuple input, Class<TYPE> classIn) throws IllegalAccessException, InstantiationException {
         TYPE newObject = classIn.newInstance();
         newObject.fillFromTuple(input);
         return newObject;
     }
 
-    public static <TYPE extends TupledPojo> Values mapToValues(TYPE objectOut) {
+    static <TYPE extends TupledPojo> Values mapToValues(TYPE objectOut) {
         return objectOut.mapToValues();
     }
 
-    public static <TYPE extends TupledPojo> List<String> getFields(Class<TYPE> classOut) {
+    static <TYPE extends TupledPojo> List<String> getFields(Class<TYPE> classOut) {
         return Arrays.stream(classOut.getDeclaredFields())
                 .map(Field::getName)
                 .collect(Collectors.toList());

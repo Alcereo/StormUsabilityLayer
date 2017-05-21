@@ -7,11 +7,9 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-import ru.alcereo.utils.Consumer2WithFunction;
-import ru.alcereo.utils.SerializableConsumer;
+import ru.alcereo.utils.Emitter;
 
 import java.util.Map;
-import java.util.function.Function;
 
 
 /**
@@ -46,7 +44,7 @@ public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends 
 
     }
 
-    public void emitFunction(TYPE_OUT objectOut){
+    private void emitFunction(TYPE_OUT objectOut){
         Values values = TypeSafeMapper.mapToValues(objectOut);
         collector.emit(values);
     }
@@ -60,6 +58,6 @@ public abstract class TypeSafeBolt<TYPE_IN extends TupledPojo, TYPE_OUT extends 
         );
     }
 
-    public abstract void consume(TYPE_IN value1, SerializableConsumer<TYPE_OUT> consumer);
+    public abstract void consume(TYPE_IN inputObject, Emitter<TYPE_OUT> emitter);
 
 }

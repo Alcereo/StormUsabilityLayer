@@ -11,6 +11,8 @@ public class PersonValue implements TupledPojo {
 
     private String name;
     private Integer age;
+    private City city;
+    private String description;
 
     public String getName() {
         return name;
@@ -28,26 +30,47 @@ public class PersonValue implements TupledPojo {
         this.age = age;
     }
 
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public void fillFromTuple(Tuple input) {
         name = input.getString(0);
         age = input.getInteger(1);
+        city = (City) input.getValueByField("city");
+        description = input.getStringByField("description");
     }
 
     @Override
     public Values mapToValues() {
         return new Values(
                 name,
-                age
+                age,
+                city,
+                description
         );
     }
-
 
     @Override
     public String toString() {
         return "PersonValue{" +
                 "name='" + name + '\'' +
                 ", age=" + age +
+                ", city=" + city +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

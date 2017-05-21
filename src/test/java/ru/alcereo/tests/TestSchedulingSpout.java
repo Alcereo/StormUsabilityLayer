@@ -11,10 +11,7 @@ import org.apache.storm.tuple.Values;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PipedReader;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by alcereo on 21.05.17.
@@ -22,6 +19,16 @@ import java.util.Scanner;
 public class TestSchedulingSpout extends BaseRichSpout{
 
     private SpoutOutputCollector collector;
+
+    static final List<String> personsList = Arrays.asList(
+            "{\"name\":\"Alexander\",\"age\":\"25\"}",
+            "{\"name\":\"Michael\",\"age\":\"16\"}",
+            "{\"name\":\"Ilya\",\"age\":\"28\"}",
+            "{\"name\":\"Maxim\",\"age\":\"18\"}",
+            "{\"name\":\"Dmitriy\",\"age\":\"29\"}",
+            "{\"name\":\"Konstantin\",\"age\":\"23\"}",
+            "{\"name\":\"Pavel\",\"age\":\"27\"}"
+    );
 
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
@@ -37,14 +44,14 @@ public class TestSchedulingSpout extends BaseRichSpout{
             e.printStackTrace();
         }
 
-        String text = "{\n" +
-                "\t\"name\":\"Alcereo\",\n" +
-                "\t\"age\":\"25\"\n" +
-                "}";
+        ArrayList<String> list = new ArrayList<>(personsList);
+        Collections.shuffle(list);
 
-        Arrays.asList(
-                text.split(" ")).forEach(s -> collector.emit(new Values(s))
-        );
+        list.stream()
+                .findAny()
+                .map(
+                        s -> collector.emit(new Values(s))
+                );
 
     }
 
